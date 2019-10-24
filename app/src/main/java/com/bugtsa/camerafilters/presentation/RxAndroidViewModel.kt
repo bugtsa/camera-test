@@ -3,13 +3,12 @@ package com.bugtsa.camerafilters.presentation
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import com.bugtsa.camerafilters.global.ErrorHandler
 import com.hadilq.liveevent.LiveEvent
-import im.dlg.global.ErrorHandler
 import im.dlg.global.contracts.ErrorObservableOwner
 import im.dlg.global.contracts.OnBackPressable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-
 
 open class RxAndroidViewModel(application: Application) : AndroidViewModel(application), OnBackPressable, ErrorObservableOwner {
 

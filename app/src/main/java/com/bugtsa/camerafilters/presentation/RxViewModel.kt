@@ -2,10 +2,8 @@ package com.bugtsa.camerafilters.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.bugtsa.camerafilters.global.ErrorHandler
 import com.hadilq.liveevent.LiveEvent
-import im.dlg.global.ErrorHandler
-import im.dlg.global.contracts.ErrorObservableOwner
-import im.dlg.global.contracts.OnBackPressable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 

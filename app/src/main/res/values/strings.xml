@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">CameraFilters</string>
+
+    <string name="error_undefined">Some error occurred</string>
+
+    <string-array name="create_group_fill_info_avatar_actions_without_delete">
+        <item>Pick from gallery</item>
+        <item>Take photo from camera</item>
+    </string-array>
+</resources>

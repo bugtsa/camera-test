@@ -3,9 +3,12 @@
 ext {
     versions = [
             lib    : [
-                    appcompat             : '1.0.2',
-                    core_ktx              : '1.0.2',
+                    appcompat             : '1.1.0',
+                    core_ktx              : '1.1.0',
                     lifecycle             : '2.1.0',
+
+                    koin                  : '2.0.1',
+                    glide                 : '4.9.0',
 
                     timber                : '4.7.1',
                     rxkotlin              : '2.3.0',

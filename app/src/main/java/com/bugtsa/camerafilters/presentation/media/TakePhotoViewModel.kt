@@ -7,19 +7,12 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.lifecycle.LiveData
 import com.bugtsa.camerafilters.R
+import com.bugtsa.camerafilters.domain.file.FileManagerInteractor
 import com.bugtsa.camerafilters.global.ErrorHandler
-import com.bugtsa.camerafilters.global.ErrorHandler.handle
 import com.bugtsa.camerafilters.global.SchedulersProvider
 import com.bugtsa.camerafilters.presentation.RequestCameraPermissionDelegate
 import com.bugtsa.camerafilters.presentation.RxAndroidViewModel
 import com.hadilq.liveevent.LiveEvent
-import im.dlg.platform.R
-import im.dlg.platform.di.ScopeHost
-import im.dlg.platform.di.ScopedInstanceProvider
-import im.dlg.platform.domain.file.FileManagerInteractor
-import im.dlg.platform.presentation.RequestCameraPermissionDelegate
-import im.dlg.platform.presentation.RxAndroidViewModel
-import im.dlg.platform.ui.Views
 import io.reactivex.disposables.Disposable
 import org.koin.core.KoinComponent
 import java.io.File
@@ -32,7 +25,6 @@ class TakePhotoViewModel(application: Application,
                          private val fileManagerInteractor: FileManagerInteractor
 ) : RxAndroidViewModel(application), KoinComponent{
 
-    private val takeDataHolder = takePhotoProvider.provide()
     private val takePhotoEventLiveData = LiveEvent<TakePhotoIntentData>()
     private val requestPermissions = LiveEvent<Unit>()
 
@@ -62,8 +54,6 @@ class TakePhotoViewModel(application: Application,
                 .observeOn(SchedulersProvider.ui())
                 .subscribe({ (file, destinationPhotoUri) ->
                     croppedPhotoFile = file
-                    takeDataHolder.sourceUri = sourcePhotoUri
-                    takeDataHolder.destinationUri = destinationPhotoUri
 //                    startOtherScreen()
                 }, ErrorHandler::handle)
                 .also { addDispose(it) }

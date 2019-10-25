@@ -4,9 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.bugtsa.camerafilters.global.ErrorHandler
+import com.bugtsa.camerafilters.global.contracts.ErrorObservableOwner
+import com.bugtsa.camerafilters.global.contracts.OnBackPressable
 import com.hadilq.liveevent.LiveEvent
-import im.dlg.global.contracts.ErrorObservableOwner
-import im.dlg.global.contracts.OnBackPressable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 

@@ -3,8 +3,6 @@
 
     <string name="error_undefined">Some error occurred</string>
 
-    <string-array name="create_group_fill_info_avatar_actions_without_delete">
-        <item>Pick from gallery</item>
-        <item>Take photo from camera</item>
-    </string-array>
+    <string name="action_pick_from_gallery">Pick from gallery</string>
+    <string name="action_take_from_camera">Take photo from camera</string>
 </resources>

@@ -21,6 +21,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -51,6 +56,8 @@ dependencies {
 
     // Timber
     implementation "com.jakewharton.timber:timber:$versions.lib.timber"
+
+    implementation "org.jetbrains.anko:anko:$versions.lib.anko"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

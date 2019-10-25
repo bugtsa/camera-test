@@ -8,13 +8,23 @@
     tools:context=".ui.main.MainFragment">
 
     <TextView
-        android:id="@+id/message"
+        android:id="@+id/pick_from_gallery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MainFragment"
+        android:text="@string/action_pick_from_gallery"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/take_from_camera"/>
+
+    <TextView
+        android:id="@+id/take_from_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/action_take_from_camera"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/pick_from_gallery" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,10 +1,9 @@
 <resources>
+    <string name="app_name">КамероФильтры</string>
 
     <string name="error_undefined">Произошла ошибка</string>
 
-    <string-array name="create_group_fill_info_avatar_actions_without_delete">
-        <item>Добавить из галереи</item>
-        <item>Сделать фото на камеру</item>
-    </string-array>
+    <string name="action_pick_from_gallery">Добавить из галереи</string>
+    <string name="action_take_from_camera">Сделать фото на камеру</string>
 
 </resources>

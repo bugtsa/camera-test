@@ -3,12 +3,12 @@
     android:id="@+id/vMainContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@android:color/transparent">
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
 
     <FrameLayout
+        android:id="@+id/fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/fragment"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

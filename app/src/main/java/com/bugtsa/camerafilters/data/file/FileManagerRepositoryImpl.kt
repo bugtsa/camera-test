@@ -11,7 +11,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class FileManagerUtilImpl(private val application: Application) : FileManagerUtil {
+class FileManagerRepositoryImpl(private val application: Application) : FileManagerRepository {
     companion object {
         private const val FILE_PREFIX = "Bugtsa_"
         private const val FILE_JPG_SUFFIX = ".jpg"
@@ -20,23 +20,29 @@ class FileManagerUtilImpl(private val application: Application) : FileManagerUti
 
     override fun generatePhotoTempFile(): Single<File> = Single.fromCallable {
         createTempFile(
-                FILE_PREFIX + DATE_TIME_FORMAT.format(Date()),
-                FILE_JPG_SUFFIX,
-                application.getExternalFilesDir(Environment.DIRECTORY_PICTURES))
+            FILE_PREFIX + DATE_TIME_FORMAT.format(Date()),
+            FILE_JPG_SUFFIX,
+            application.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        )
     }
 
     override fun generateUriForFile(file: File): Single<Uri> = Single.fromCallable {
         FileProvider.getUriForFile(
-                application,
-                application.packageName + ".provider",
-                file)
+            application,
+            application.packageName + ".provider",
+            file
+        )
     }
 
     override fun notifyGalleryAboutNewImage(filePath: String, ext: String) {
-        MediaScannerConnection.scanFile(application,
-                arrayOf(filePath),
-                arrayOf(MimeTypeMap.getSingleton()
-                        .getMimeTypeFromExtension(ext)),
-                null)
+        MediaScannerConnection.scanFile(
+            application,
+            arrayOf(filePath),
+            arrayOf(
+                MimeTypeMap.getSingleton()
+                    .getMimeTypeFromExtension(ext)
+            ),
+            null
+        )
     }
 }

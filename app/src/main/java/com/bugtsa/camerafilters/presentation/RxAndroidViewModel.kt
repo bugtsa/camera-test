@@ -10,7 +10,8 @@ import com.hadilq.liveevent.LiveEvent
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
-open class RxAndroidViewModel(application: Application) : AndroidViewModel(application), OnBackPressable, ErrorObservableOwner {
+open class RxAndroidViewModel(application: Application) : AndroidViewModel(application),
+    OnBackPressable, ErrorObservableOwner {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val errorLiveData = LiveEvent<String>()
@@ -38,9 +39,9 @@ open class RxAndroidViewModel(application: Application) : AndroidViewModel(appli
     fun observeKeyboardVisibilityEvent() = keyboardVisibilityEvent as LiveData<Boolean>
 
     protected open fun handleError(
-            throwable: Throwable,
-            showError: Boolean = true,
-            defaultErrorMessage: String? = null
+        throwable: Throwable,
+        showError: Boolean = true,
+        defaultErrorMessage: String? = null
     ) {
         ErrorHandler.handle(throwable)
         if (showError) (throwable.message ?: defaultErrorMessage)?.let(errorLiveData::postValue)

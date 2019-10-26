@@ -37,9 +37,9 @@ open class RxViewModel : ViewModel(), OnBackPressable, ErrorObservableOwner {
     fun observeKeyboardVisibilityEvent() = keyboardVisibilityEvent as LiveData<Boolean>
 
     protected open fun handleError(
-            throwable: Throwable,
-            showError: Boolean = true,
-            defaultErrorMessage: String? = null
+        throwable: Throwable,
+        showError: Boolean = true,
+        defaultErrorMessage: String? = null
     ) {
         ErrorHandler.handle(throwable)
         if (showError) (throwable.message ?: defaultErrorMessage)?.let(errorLiveData::postValue)

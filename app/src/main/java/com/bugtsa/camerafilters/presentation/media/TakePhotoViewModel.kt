@@ -14,16 +14,17 @@ import com.bugtsa.camerafilters.presentation.RequestCameraPermissionDelegate
 import com.bugtsa.camerafilters.presentation.RxAndroidViewModel
 import com.hadilq.liveevent.LiveEvent
 import io.reactivex.disposables.Disposable
-import org.koin.core.KoinComponent
 import java.io.File
 
 
 open class TakePhotoData(open val file: File, open val uri: Uri)
-data class TakePhotoIntentData(val intent: Intent, override val file: File, override val uri: Uri) : TakePhotoData(file, uri)
+data class TakePhotoIntentData(val intent: Intent, override val file: File, override val uri: Uri) :
+    TakePhotoData(file, uri)
 
-class TakePhotoViewModel(application: Application,
-                         private val fileManagerInteractor: FileManagerInteractor
-) : RxAndroidViewModel(application){
+class TakePhotoViewModel(
+    application: Application,
+    private val fileManagerInteractor: FileManagerInteractor
+) : RxAndroidViewModel(application) {
 
     private val takePhotoEventLiveData = LiveEvent<TakePhotoIntentData>()
     private val requestPermissions = LiveEvent<Unit>()
@@ -47,25 +48,29 @@ class TakePhotoViewModel(application: Application,
     fun photoTaken(sourcePhotoUri: Uri, tempFile: File? = null) {
         sourcePhotoFile = tempFile
         fileManagerInteractor.generateTempPhotoFile()
-                .flatMap { file ->
-                    fileManagerInteractor.generateUriForFile(file).map { Pair(file, it) }
-                }
-                .subscribeOn(SchedulersProvider.io())
-                .observeOn(SchedulersProvider.ui())
-                .subscribe({ (file, destinationPhotoUri) ->
-                    croppedPhotoFile = file
+            .flatMap { file ->
+                fileManagerInteractor.generateUriForFile(file).map { Pair(file, it) }
+            }
+            .subscribeOn(SchedulersProvider.io())
+            .observeOn(SchedulersProvider.ui())
+            .subscribe({ (file, destinationPhotoUri) ->
+                croppedPhotoFile = file
 //                    startOtherScreen()
-                }, ErrorHandler::handle)
-                .also { addDispose(it) }
+            }, ErrorHandler::handle)
+            .also { addDispose(it) }
     }
 
-    fun onRequestPermissionsResult(requestCode: Int,
-                                   permissions: Array<out String>,
-                                   grantResults: IntArray) {
+    fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         if (requestCameraPermissionDelegate.checkRequestPermissionsResult(
-                        requestCode,
-                        permissions,
-                        grantResults)) {
+                requestCode,
+                permissions,
+                grantResults
+            )
+        ) {
             cameraPermissionGranted()
         }
     }
@@ -81,15 +86,17 @@ class TakePhotoViewModel(application: Application,
                     val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                     intent.resolveActivity(this)?.let {
                         fileManagerInteractor.generateTempPhotoFile()
-                                .flatMap { file ->
-                                    fileManagerInteractor.generateUriForFile(file).map { Pair(file, it) }
-                                }.subscribeOn(SchedulersProvider.io())
-                                .observeOn(SchedulersProvider.ui())
-                                .subscribe({ (file, uri) ->
-                                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-                                    takePhotoEventLiveData.value = TakePhotoIntentData(intent, file, uri)
-                                }, ErrorHandler::handle)
-                                .also { addDispose(it) }
+                            .flatMap { file ->
+                                fileManagerInteractor.generateUriForFile(file)
+                                    .map { Pair(file, it) }
+                            }.subscribeOn(SchedulersProvider.io())
+                            .observeOn(SchedulersProvider.ui())
+                            .subscribe({ (file, uri) ->
+                                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+                                takePhotoEventLiveData.value =
+                                    TakePhotoIntentData(intent, file, uri)
+                            }, ErrorHandler::handle)
+                            .also { addDispose(it) }
                     }
                 }
             }

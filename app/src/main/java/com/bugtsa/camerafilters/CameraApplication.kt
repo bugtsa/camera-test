@@ -1,13 +1,13 @@
 package com.bugtsa.camerafilters
 
 import androidx.multidex.MultiDexApplication
-import com.bugtsa.camerafilters.di.CameraGraph
+import com.bugtsa.camerafilters.di.CameraFiltersGraph
 
 class CameraApplication : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
 
-        CameraGraph.initialize(this)
+        CameraFiltersGraph.initialize(this)
     }
 }

@@ -8,17 +8,22 @@ import com.bugtsa.camerafilters.global.Constants.ReqCodes.CAMERA_PERMISSION_CODE
 
 class RequestCameraPermissionDelegate {
 
-    fun checkRequestPermissionsResult(requestCode: Int,
-                                      permissions: Array<out String>,
-                                      grantResults: IntArray): Boolean =
-            onRequestPermissionsGranted(requestCode, permissions, grantResults)
+    fun checkRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ): Boolean =
+        onRequestPermissionsGranted(requestCode, permissions, grantResults)
 
     fun hasCameraPermission(context: Context) = ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+        context,
+        Manifest.permission.CAMERA
+    ) == PackageManager.PERMISSION_GRANTED
 
-    private fun onRequestPermissionsGranted(requestCode: Int, permissions: Array<out String>,
-                                            grantResults: IntArray): Boolean {
+    private fun onRequestPermissionsGranted(
+        requestCode: Int, permissions: Array<out String>,
+        grantResults: IntArray
+    ): Boolean {
         val isRequestedPermission = requestCode == CAMERA_PERMISSION_CODE &&
                 permissions.contains(Manifest.permission.CAMERA)
 

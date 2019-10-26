@@ -1,29 +1,30 @@
-package com.bugtsa.camerafilters.ui.main
+package com.bugtsa.camerafilters.ui
 
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.bugtsa.camerafilters.R
 import com.bugtsa.camerafilters.global.Constants.ReqCodes.CAMERA_PERMISSION_CODE
 import com.bugtsa.camerafilters.global.Constants.ReqCodes.REQUEST_PICK_PHOTO
 import com.bugtsa.camerafilters.global.Constants.ReqCodes.REQUEST_TAKE_PHOTO
+import com.bugtsa.camerafilters.global.extentions.pickPhoto
+import com.bugtsa.camerafilters.presentation.ChoosePhotoTypeViewModel
 import com.bugtsa.camerafilters.presentation.media.TakePhotoIntentData
 import com.bugtsa.camerafilters.presentation.media.TakePhotoViewModel
-import com.bugtsa.camerafilters.ui.BaseFragment
-import kotlinx.android.synthetic.main.main_fragment.*
+import kotlinx.android.synthetic.main.fragment_choose_photo_type.*
+import org.jetbrains.anko.support.v4.longToast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainFragment : BaseFragment(R.layout.main_fragment) {
+class ChoosePhotoTypeFragment : BaseFragment(R.layout.fragment_choose_photo_type) {
 
     companion object {
-        fun newInstance() = MainFragment()
+        fun newInstance() = ChoosePhotoTypeFragment()
     }
 
-    private val mainViewModel by viewModel<MainViewModel>()
+    private val mainViewModel by viewModel<ChoosePhotoTypeViewModel>()
     private val takePhotoViewModel by viewModel<TakePhotoViewModel>()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -42,7 +43,7 @@ class MainFragment : BaseFragment(R.layout.main_fragment) {
                 CAMERA_PERMISSION_CODE
             )
         })
-//        observeErrors()
+        observeErrors()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -68,7 +69,7 @@ class MainFragment : BaseFragment(R.layout.main_fragment) {
     }
 
     private fun setClickListeners() {
-        pick_from_gallery.setOnClickListener { mainViewModel.pickFromGallery() }
+        pick_from_gallery.setOnClickListener { pickPhoto(REQUEST_PICK_PHOTO) }
         take_from_camera.setOnClickListener { takePhotoViewModel.requestTakePhoto() }
     }
 
@@ -78,9 +79,9 @@ class MainFragment : BaseFragment(R.layout.main_fragment) {
         }
     }
 
-//    private fun observeErrors() {
-//        mainViewModel.observeErrorLiveData().observe(viewLifecycleOwner, Observer { error ->
-//            error?.let { longToast(it) }
-//        })
-//    }
+    private fun observeErrors() {
+        mainViewModel.observeErrorLiveData().observe(viewLifecycleOwner, Observer { error ->
+            error?.let { longToast(it) }
+        })
+    }
 }

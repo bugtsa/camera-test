@@ -7,4 +7,14 @@ object Constants {
         const val REQUEST_PICK_PHOTO = 7
         const val CAMERA_PERMISSION_CODE = 8
     }
+
+    object PICK_IMAGE {
+        const val DEFAULT_MIME = "*/*"
+        val IMAGE_MIMES = arrayOf(
+            "image/bmp",
+            "image/png",
+            "image/jpeg",
+            "image/gif"
+        )
+    }
 }

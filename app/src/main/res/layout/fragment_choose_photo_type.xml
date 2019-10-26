@@ -5,17 +5,17 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.MainFragment">
+    tools:context=".ui.ChoosePhotoTypeFragment">
 
     <TextView
         android:id="@+id/pick_from_gallery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/action_pick_from_gallery"
+        app:layout_constraintBottom_toTopOf="@+id/take_from_camera"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/take_from_camera"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/take_from_camera"

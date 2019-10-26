@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">КамероФильтры</string>
 
-    <string name="error_undefined">Произошла ошибка</string>
-
     <string name="action_pick_from_gallery">Добавить из галереи</string>
     <string name="action_take_from_camera">Сделать фото на камеру</string>
 
+    <string name="error_undefined">Произошла ошибка</string>
+
+    <string name="pick_photo_select_app">Выберите приложение</string>
 </resources>

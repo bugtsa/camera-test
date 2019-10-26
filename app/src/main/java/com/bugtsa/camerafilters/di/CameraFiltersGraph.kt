@@ -10,7 +10,7 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 
-object CameraGraph {
+object CameraFiltersGraph {
 
     private lateinit var application: Application
 

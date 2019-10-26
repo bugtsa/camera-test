@@ -14,6 +14,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -58,6 +59,8 @@ dependencies {
     implementation "com.jakewharton.timber:timber:$versions.lib.timber"
 
     implementation "org.jetbrains.anko:anko:$versions.lib.anko"
+
+    implementation "androidx.multidex:multidex:$versions.lib.multidex"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

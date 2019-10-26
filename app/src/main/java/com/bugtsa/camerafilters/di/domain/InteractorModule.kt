@@ -5,7 +5,7 @@ import com.bugtsa.camerafilters.domain.file.FileManagerInteractorImpl
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-object InteratorModule {
+object InteractorModule {
 
     val module by lazy {
         module {

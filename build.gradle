@@ -12,6 +12,7 @@ ext {
 
                     timber                : '4.7.1',
                     anko                  : '0.10.8',
+                    multidex              : '2.0.1',
 
                     rxkotlin              : '2.3.0',
                     rxjava                : '2.2.10',

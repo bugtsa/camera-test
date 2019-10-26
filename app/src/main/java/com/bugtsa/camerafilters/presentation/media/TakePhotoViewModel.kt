@@ -23,7 +23,7 @@ data class TakePhotoIntentData(val intent: Intent, override val file: File, over
 
 class TakePhotoViewModel(application: Application,
                          private val fileManagerInteractor: FileManagerInteractor
-) : RxAndroidViewModel(application), KoinComponent{
+) : RxAndroidViewModel(application){
 
     private val takePhotoEventLiveData = LiveEvent<TakePhotoIntentData>()
     private val requestPermissions = LiveEvent<Unit>()

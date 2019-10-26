@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
+import com.bugtsa.camerafilters.OpenFilterListFragmentListener
 import com.bugtsa.camerafilters.R
 import com.bugtsa.camerafilters.global.Constants.ReqCodes.CAMERA_PERMISSION_CODE
 import com.bugtsa.camerafilters.global.Constants.ReqCodes.REQUEST_PICK_PHOTO
@@ -15,15 +16,11 @@ import com.bugtsa.camerafilters.presentation.ChoosePhotoTypeViewModel
 import com.bugtsa.camerafilters.presentation.media.TakePhotoIntentData
 import com.bugtsa.camerafilters.presentation.media.TakePhotoViewModel
 import kotlinx.android.synthetic.main.fragment_choose_photo_type.*
-import org.jetbrains.anko.support.v4.longToast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ChoosePhotoTypeFragment : BaseFragment(R.layout.fragment_choose_photo_type) {
 
-    companion object {
-        fun newInstance() = ChoosePhotoTypeFragment()
-    }
-
+    private lateinit var openFilterFragmentListener: OpenFilterListFragmentListener
     private val mainViewModel by viewModel<ChoosePhotoTypeViewModel>()
     private val takePhotoViewModel by viewModel<TakePhotoViewModel>()
 
@@ -43,6 +40,8 @@ class ChoosePhotoTypeFragment : BaseFragment(R.layout.fragment_choose_photo_type
                 CAMERA_PERMISSION_CODE
             )
         })
+        takePhotoViewModel.observeStartFilterScreen()
+            .observe(viewLifecycleOwner, Observer{openFilterFragmentListener.readyToOpenScreen()})
         observeErrors()
     }
 
@@ -69,8 +68,12 @@ class ChoosePhotoTypeFragment : BaseFragment(R.layout.fragment_choose_photo_type
     }
 
     private fun setClickListeners() {
-        pick_from_gallery.setOnClickListener { pickPhoto(REQUEST_PICK_PHOTO) }
-        take_from_camera.setOnClickListener { takePhotoViewModel.requestTakePhoto() }
+        vPickFromGalleryButton.setOnClickListener { pickPhoto(REQUEST_PICK_PHOTO) }
+        vTakeFromCameraButton.setOnClickListener { takePhotoViewModel.requestTakePhoto() }
+    }
+
+    private fun setOpenFilterFragmentListener(openFilterListFragmentListener: OpenFilterListFragmentListener) {
+        this.openFilterFragmentListener = openFilterListFragmentListener
     }
 
     private fun takePhoto(intentData: TakePhotoIntentData?) {
@@ -83,5 +86,14 @@ class ChoosePhotoTypeFragment : BaseFragment(R.layout.fragment_choose_photo_type
         mainViewModel.observeErrorLiveData().observe(viewLifecycleOwner, Observer { error ->
             error?.let { longToast(it) }
         })
+    }
+
+    companion object {
+        fun newInstance(openFilterListFragmentListener: OpenFilterListFragmentListener): ChoosePhotoTypeFragment {
+            val choosePhotoTypeFragment = ChoosePhotoTypeFragment()
+            choosePhotoTypeFragment.setOpenFilterFragmentListener(openFilterListFragmentListener)
+            return         choosePhotoTypeFragment
+
+        }
     }
 }

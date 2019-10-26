@@ -39,7 +39,6 @@ abstract class BaseFragment(layout: Int) : Fragment(layout) {
 
     override fun onDestroy() {
         super.onDestroy()
-        homeActivity.setSupportActionBar(null)
         compositeDisposable.clear()
         creationDialogDisposable?.dispose()
     }
@@ -74,6 +73,10 @@ abstract class BaseFragment(layout: Int) : Fragment(layout) {
 
     fun toast(message: String?) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    fun longToast(message: String?) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 
     override fun onAttach(context: Context) {

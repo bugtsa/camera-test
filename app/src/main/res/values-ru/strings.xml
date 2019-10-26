@@ -6,5 +6,7 @@
 
     <string name="error_undefined">Произошла ошибка</string>
 
+    <string name="filter_normal">Нормальный</string>
+
     <string name="pick_photo_select_app">Выберите приложение</string>
 </resources>

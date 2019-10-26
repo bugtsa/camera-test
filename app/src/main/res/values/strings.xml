@@ -6,5 +6,7 @@
 
     <string name="error_undefined">Some error occurred</string>
 
+    <string name="filter_normal">Normal</string>
+
     <string name="pick_photo_select_app">Select application</string>
 </resources>

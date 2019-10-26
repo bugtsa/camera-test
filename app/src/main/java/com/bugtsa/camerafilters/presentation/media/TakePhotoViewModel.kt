@@ -28,6 +28,7 @@ class TakePhotoViewModel(
 
     private val takePhotoEventLiveData = LiveEvent<TakePhotoIntentData>()
     private val requestPermissions = LiveEvent<Unit>()
+    private val startFilterScreeLiveData = LiveEvent<Unit>()
 
     private val defaultErrorMessage = application.getString(R.string.error_undefined)
 
@@ -40,6 +41,7 @@ class TakePhotoViewModel(
 
     fun takePhotoEventLiveData(): LiveData<TakePhotoIntentData> = takePhotoEventLiveData
     fun observeRequestPermissions(): LiveEvent<Unit> = requestPermissions
+    fun observeStartFilterScreen(): LiveEvent<Unit> = startFilterScreeLiveData
 
     fun requestTakePhoto() {
         requestTakePhoto(requestCameraPermissionDelegate.hasCameraPermission(getApplication()))
@@ -55,7 +57,7 @@ class TakePhotoViewModel(
             .observeOn(SchedulersProvider.ui())
             .subscribe({ (file, destinationPhotoUri) ->
                 croppedPhotoFile = file
-//                    startOtherScreen()
+                startFilterScreeLiveData.postValue(Unit)
             }, ErrorHandler::handle)
             .also { addDispose(it) }
     }

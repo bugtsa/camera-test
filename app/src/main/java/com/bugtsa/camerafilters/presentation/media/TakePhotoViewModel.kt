@@ -7,6 +7,8 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.lifecycle.LiveData
 import com.bugtsa.camerafilters.R
+import com.bugtsa.camerafilters.di.ScopeHost
+import com.bugtsa.camerafilters.di.ScopedInstanceProvider
 import com.bugtsa.camerafilters.domain.file.FileManagerInteractor
 import com.bugtsa.camerafilters.global.ErrorHandler
 import com.bugtsa.camerafilters.global.SchedulersProvider
@@ -14,6 +16,7 @@ import com.bugtsa.camerafilters.presentation.RequestCameraPermissionDelegate
 import com.bugtsa.camerafilters.presentation.RxAndroidViewModel
 import com.hadilq.liveevent.LiveEvent
 import io.reactivex.disposables.Disposable
+import org.koin.core.KoinComponent
 import java.io.File
 
 
@@ -23,9 +26,12 @@ data class TakePhotoIntentData(val intent: Intent, override val file: File, over
 
 class TakePhotoViewModel(
     application: Application,
-    private val fileManagerInteractor: FileManagerInteractor
-) : RxAndroidViewModel(application) {
+    private val fileManagerInteractor: FileManagerInteractor,
+    private val takePhotoProvider: ScopedInstanceProvider<TakePhotoFlowDataHolder>
+) : RxAndroidViewModel(application), KoinComponent,
+    ScopeHost<TakePhotoFlowDataHolder> by ScopeHost.Delegate(takePhotoProvider) {
 
+    private val takeDataHolder = takePhotoProvider.provide()
     private val takePhotoEventLiveData = LiveEvent<TakePhotoIntentData>()
     private val requestPermissions = LiveEvent<Unit>()
     private val startFilterScreeLiveData = LiveEvent<Unit>()
@@ -33,7 +39,7 @@ class TakePhotoViewModel(
     private val defaultErrorMessage = application.getString(R.string.error_undefined)
 
     private var sourcePhotoFile: File? = null
-    private var croppedPhotoFile: File? = null
+    private var filteredPhotoFile: File? = null
     private var cropSuccessDisposable: Disposable? = null
     private var cropErrorDisposable: Disposable? = null
 
@@ -49,6 +55,7 @@ class TakePhotoViewModel(
 
     fun photoTaken(sourcePhotoUri: Uri, tempFile: File? = null) {
         sourcePhotoFile = tempFile
+        takeDataHolder.sourcePhotoTempFile = tempFile
         fileManagerInteractor.generateTempPhotoFile()
             .flatMap { file ->
                 fileManagerInteractor.generateUriForFile(file).map { Pair(file, it) }
@@ -56,7 +63,8 @@ class TakePhotoViewModel(
             .subscribeOn(SchedulersProvider.io())
             .observeOn(SchedulersProvider.ui())
             .subscribe({ (file, destinationPhotoUri) ->
-                croppedPhotoFile = file
+                filteredPhotoFile = file
+                takeDataHolder.filteredPhotoTempFile = file
                 startFilterScreeLiveData.postValue(Unit)
             }, ErrorHandler::handle)
             .also { addDispose(it) }

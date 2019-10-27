@@ -17,4 +17,8 @@ object Constants {
             "image/gif"
         )
     }
+
+    object TAKE_PHOTO {
+        const val KEY_SCOPE_ID = "take_photo_scope_id"
+    }
 }

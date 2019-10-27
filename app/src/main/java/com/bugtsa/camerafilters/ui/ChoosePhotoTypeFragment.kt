@@ -12,7 +12,6 @@ import com.bugtsa.camerafilters.global.Constants.ReqCodes.CAMERA_PERMISSION_CODE
 import com.bugtsa.camerafilters.global.Constants.ReqCodes.REQUEST_PICK_PHOTO
 import com.bugtsa.camerafilters.global.Constants.ReqCodes.REQUEST_TAKE_PHOTO
 import com.bugtsa.camerafilters.global.extentions.pickPhoto
-import com.bugtsa.camerafilters.presentation.FilterPhotoViewModel
 import com.bugtsa.camerafilters.presentation.media.TakePhotoIntentData
 import com.bugtsa.camerafilters.presentation.media.TakePhotoViewModel
 import kotlinx.android.synthetic.main.fragment_choose_photo_type.*
@@ -21,7 +20,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class ChoosePhotoTypeFragment : BaseFragment(R.layout.fragment_choose_photo_type) {
 
     private lateinit var openFilterFragmentListener: OpenFilterListFragmentListener
-    private val mainViewModel by viewModel<FilterPhotoViewModel>()
     private val takePhotoViewModel by viewModel<TakePhotoViewModel>()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -41,7 +39,9 @@ class ChoosePhotoTypeFragment : BaseFragment(R.layout.fragment_choose_photo_type
             )
         })
         takePhotoViewModel.observeStartFilterScreen()
-            .observe(viewLifecycleOwner, Observer{openFilterFragmentListener.readyToOpenScreen()})
+            .observe(
+                viewLifecycleOwner,
+                Observer { openFilterFragmentListener.readyToOpenScreen() })
         observeErrors()
     }
 
@@ -83,7 +83,7 @@ class ChoosePhotoTypeFragment : BaseFragment(R.layout.fragment_choose_photo_type
     }
 
     private fun observeErrors() {
-        mainViewModel.observeErrorLiveData().observe(viewLifecycleOwner, Observer { error ->
+        takePhotoViewModel.observeErrorLiveData().observe(viewLifecycleOwner, Observer { error ->
             error?.let { longToast(it) }
         })
     }
@@ -92,7 +92,7 @@ class ChoosePhotoTypeFragment : BaseFragment(R.layout.fragment_choose_photo_type
         fun newInstance(openFilterListFragmentListener: OpenFilterListFragmentListener): ChoosePhotoTypeFragment {
             val choosePhotoTypeFragment = ChoosePhotoTypeFragment()
             choosePhotoTypeFragment.setOpenFilterFragmentListener(openFilterListFragmentListener)
-            return         choosePhotoTypeFragment
+            return choosePhotoTypeFragment
 
         }
     }

@@ -55,6 +55,7 @@ class TakePhotoViewModel(
 
     fun photoTaken(sourcePhotoUri: Uri, tempFile: File? = null) {
         sourcePhotoFile = tempFile
+        takeDataHolder.sourceUri = sourcePhotoUri
         takeDataHolder.sourcePhotoTempFile = tempFile
         fileManagerInteractor.generateTempPhotoFile()
             .flatMap { file ->
@@ -64,6 +65,7 @@ class TakePhotoViewModel(
             .observeOn(SchedulersProvider.ui())
             .subscribe({ (file, destinationPhotoUri) ->
                 filteredPhotoFile = file
+                takeDataHolder.destinationUri = destinationPhotoUri
                 takeDataHolder.filteredPhotoTempFile = file
                 startFilterScreeLiveData.postValue(Unit)
             }, ErrorHandler::handle)

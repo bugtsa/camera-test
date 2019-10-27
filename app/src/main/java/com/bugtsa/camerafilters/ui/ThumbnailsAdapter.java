@@ -24,14 +24,28 @@ public class ThumbnailsAdapter extends RecyclerView.Adapter<ThumbnailsAdapter.My
     private int selectedIndex = 0;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        //    @BindView(R.id.thumbnail)
-        ImageView thumbnail;
+        private ImageView thumbnail;
+        private TextView filterName;
 
-        //    @BindView(R.id.filter_name)
-        TextView filterName;
+        private View row;
+
+        public TextView getTitle() {
+            if (filterName == null) {
+                filterName = row.findViewById(R.id.vFilterName);
+            }
+            return filterName;
+        }
+
+        public ImageView getThumbnail() {
+            if (thumbnail == null) {
+                thumbnail = row.findViewById(R.id.vThumbnail);
+            }
+            return thumbnail;
+        }
 
         public MyViewHolder(View view) {
             super(view);
+            this.row = view;
         }
     }
 
@@ -54,20 +68,20 @@ public class ThumbnailsAdapter extends RecyclerView.Adapter<ThumbnailsAdapter.My
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final ThumbnailItem thumbnailItem = thumbnailItemList.get(position);
 
-        holder.thumbnail.setImageBitmap(thumbnailItem.image);
+        holder.getThumbnail().setImageBitmap(thumbnailItem.image);
 
-        holder.thumbnail.setOnClickListener(view -> {
+        holder.getThumbnail().setOnClickListener(view -> {
             listener.onFilterSelected(thumbnailItem.filter);
             selectedIndex = position;
             notifyDataSetChanged();
         });
 
-        holder.filterName.setText(thumbnailItem.filterName);
+        holder.getTitle().setText(thumbnailItem.filterName);
 
         if (selectedIndex == position) {
-            holder.filterName.setTextColor(ContextCompat.getColor(mContext, R.color.filter_label_selected));
+            holder.getTitle().setTextColor(ContextCompat.getColor(mContext, R.color.filter_label_selected));
         } else {
-            holder.filterName.setTextColor(ContextCompat.getColor(mContext, R.color.filter_label_normal));
+            holder.getTitle().setTextColor(ContextCompat.getColor(mContext, R.color.filter_label_normal));
         }
     }
 

@@ -19,6 +19,14 @@ import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubfilter
 import com.zomato.photofilters.utils.ThumbnailItem
 import com.zomato.photofilters.utils.ThumbnailsManager
 import kotlinx.android.synthetic.main.fragment_photo_filter.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FiltersListFragment : BaseFragment(R.layout.fragment_photo_filter),
@@ -63,11 +71,14 @@ class FiltersListFragment : BaseFragment(R.layout.fragment_photo_filter),
                 image_preview.setImageURI(imageUri)
                 sourceBitmap =
                     MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
-                sourceBitmap?.also {
-                    prepareThumbnail(it)
+                sourceBitmap?.also { bitmap ->
+                    GlobalScope.launch(Dispatchers.Main) {
+                        prepareThumbnail(bitmap)
+                    }
                 }
             })
     }
+
 
     override fun onFilterSelected(filter: Filter?) {
         filter?.also {
@@ -77,17 +88,30 @@ class FiltersListFragment : BaseFragment(R.layout.fragment_photo_filter),
             filter.addSubFilter(BrightnessSubFilter(brightnessFinal))
             filter.addSubFilter(ContrastSubFilter(contrastFinal))
             filter.addSubFilter(SaturationSubfilter(saturationFinal))
-            val r = Runnable {
-                val filteredImage = sourceBitmap?.copy(Bitmap.Config.ARGB_8888, true)
-                val bitmap = filter.processFilter(filteredImage)
-                requireActivity().runOnUiThread { image_preview.setImageBitmap(bitmap) }
+
+            GlobalScope.launch(Dispatchers.Main) {
+                flowTest(filter)
             }
-            Thread(r).start()
         }
     }
 
-    private fun prepareThumbnail(bitmap: Bitmap) {
-        val r = Runnable {
+    private suspend fun flowTest(filter: Filter) {
+        val flowFilter: Flow<Bitmap> = flow {
+            val filteredImage = sourceBitmap?.copy(Bitmap.Config.ARGB_8888, true)
+            emit(filter.processFilter(filteredImage))
+        }
+        val bitmap = flowFilter
+            .flowOn(Dispatchers.Main)
+            .single()
+
+        withContext(Dispatchers.Main) {
+            image_preview.setImageBitmap(bitmap)
+        }
+    }
+
+    private suspend fun prepareThumbnail(bitmap: Bitmap) {
+        val flowThumbManager : Flow<MutableList<ThumbnailItem>> = flow {
+
             val thumbImage = Bitmap.createScaledBitmap(bitmap, 100, 100, false)
 
             ThumbnailsManager.clearThumbs()
@@ -96,10 +120,10 @@ class FiltersListFragment : BaseFragment(R.layout.fragment_photo_filter),
             // add normal bitmap first
             val thumbnailItem = ThumbnailItem()
             thumbnailItem.image = thumbImage
-            thumbnailItem.filterName = getString(com.bugtsa.camerafilters.R.string.filter_normal)
+            thumbnailItem.filterName = getString(R.string.filter_normal)
             ThumbnailsManager.addThumb(thumbnailItem)
 
-            val filters = FilterPack.getFilterPack(activity!!)
+            val filters = FilterPack.getFilterPack(requireActivity())
 
             for (filter in filters) {
                 val tI = ThumbnailItem()
@@ -108,13 +132,15 @@ class FiltersListFragment : BaseFragment(R.layout.fragment_photo_filter),
                 tI.filterName = filter.name
                 ThumbnailsManager.addThumb(tI)
             }
-
-            thumbnailItemList.addAll(ThumbnailsManager.processThumbs(activity))
-
-            requireActivity().runOnUiThread { mAdapter?.notifyDataSetChanged() }
+            val thumbs = ThumbnailsManager.processThumbs(activity)
+            emit(thumbs)
         }
+        val result = flowThumbManager
+            .flowOn(Dispatchers.Main)
+            .single()
 
-        Thread(r).start()
+        thumbnailItemList.addAll(result)
+        mAdapter?.notifyDataSetChanged()
     }
 
     companion object {

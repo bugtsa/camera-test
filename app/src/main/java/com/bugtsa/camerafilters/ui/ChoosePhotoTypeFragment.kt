@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import com.bugtsa.camerafilters.OpenFilterListFragmentListener
@@ -27,8 +28,8 @@ class ChoosePhotoTypeFragment : BaseFragment(R.layout.fragment_choose_photo_type
         setClickListeners()
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         takePhotoViewModel.takePhotoEventLiveData()
             .observe(viewLifecycleOwner, Observer(::takePhoto))
         takePhotoViewModel.observeRequestPermissions().observe(this, Observer {

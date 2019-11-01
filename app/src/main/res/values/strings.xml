@@ -1,12 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-    <string name="app_name">CameraFilters</string>
-
     <string name="action_pick_from_gallery">Pick from gallery</string>
     <string name="action_take_from_camera">Take photo from camera</string>
+
+    <string name="app_name">CameraFilters</string>
 
     <string name="error_undefined">Some error occurred</string>
 
     <string name="filter_normal">Normal</string>
+
+    <string name="load_data_dialog_content">Stop loading?</string>
+    <string name="load_data_dialog_negative_button">Stop</string>
+    <string name="load_data_dialog_positive_button">Still wait</string>
+    <string name="load_data_dialog_title" translatable="false">@string/app_name</string>
 
     <string name="pick_photo_select_app">Select application</string>
 </resources>

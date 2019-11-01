@@ -1,12 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-    <string name="app_name">КамероФильтры</string>
-
     <string name="action_pick_from_gallery">Добавить из галереи</string>
     <string name="action_take_from_camera">Сделать фото на камеру</string>
+
+    <string name="app_name">КамероФильтры</string>
 
     <string name="error_undefined">Произошла ошибка</string>
 
     <string name="filter_normal">Нормальный</string>
+
+    <string name="load_data_dialog_content">Остановить загрузку?</string>
+    <string name="load_data_dialog_negative_button">Остановить</string>
+    <string name="load_data_dialog_positive_button">Подождать еще</string>
 
     <string name="pick_photo_select_app">Выберите приложение</string>
 </resources>

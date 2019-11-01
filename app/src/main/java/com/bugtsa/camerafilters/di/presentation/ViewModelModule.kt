@@ -36,7 +36,7 @@ object ViewModelModule {
                         return takePhotoScopeWrapper.getOrCreate().get { parametersOf(*arguments) }
                     }
                 }
-                FilterPhotoViewModel(takePhotoProvider)
+                FilterPhotoViewModel(get(), takePhotoProvider)
             }
 
             scope(named<TakePhotoFlowScopeType>()) {

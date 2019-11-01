@@ -8,6 +8,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.bugtsa.camerafilters.R
+import com.bugtsa.camerafilters.data.media.ExternalFilesProvider
+import com.bugtsa.camerafilters.data.media.ExternalFilesProviderImpl
 import com.bugtsa.camerafilters.di.ScopeHost
 import com.bugtsa.camerafilters.di.ScopedInstanceProvider
 import com.bugtsa.camerafilters.presentation.media.TakePhotoFlowDataHolder
@@ -25,6 +27,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
+import java.io.FileOutputStream
+
 
 class FilterPhotoViewModel(
     application: Application,
@@ -48,6 +52,7 @@ class FilterPhotoViewModel(
         val options = BitmapFactory.Options()
         options.inPreferredConfig = Bitmap.Config.ARGB_8888
         provider.provide().sourceUri?.also { uri ->
+            val file = ExternalFilesProviderImpl(getApplication()).getExternalImageFile()
             showPhotoLiveData.value = ShowPhotoState.SourceImagePhotoState(uri)
         }
     }
@@ -73,6 +78,18 @@ class FilterPhotoViewModel(
         val bitmap = flowFilter
             .flowOn(Dispatchers.Main)
             .single()
+
+
+        provider.provide().sourcePhotoTempFile?.also {destFile ->
+            try {
+                val out = FileOutputStream(destFile)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 90, out)
+                out.flush()
+                out.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
         showPhotoLiveData.postValue(ShowPhotoState.FilteredImagePhotoState(bitmap))
     }
 
@@ -88,7 +105,7 @@ class FilterPhotoViewModel(
             val thumbnailItem = ThumbnailItem()
             thumbnailItem.image = thumbImage
             thumbnailItem.filterName =
-                getApplication<Application>().baseContext.getString(R.string.filter_normal)
+                getApplication<Application>().baseContext.getString(com.bugtsa.camerafilters.R.string.filter_normal)
             ThumbnailsManager.addThumb(thumbnailItem)
 
             val filters = FilterPack.getFilterPack(getApplication<Application>().baseContext)

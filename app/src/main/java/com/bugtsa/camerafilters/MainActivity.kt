@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity(),
     FiltersListFragmentListener {
 
     private val hostedFragment
-        get() = supportFragmentManager.findFragmentById(R.id.fragment) as BaseFragment?
+        get() = supportFragmentManager.findFragmentById(R.id.vMainContainer) as BaseFragment?
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,13 +43,13 @@ class MainActivity : AppCompatActivity(),
 
     private fun openChoosePhotoScreen() {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment, ChoosePhotoTypeFragment.newInstance(this))
+            .replace(R.id.vMainContainer, ChoosePhotoTypeFragment.newInstance(this))
             .commitNow()
     }
 
     private fun openFilterListScreen() {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment, FiltersListFragment.newInstance(this))
+            .replace(R.id.vMainContainer, FiltersListFragment.newInstance(this))
             .commitNow()
     }
 

@@ -11,6 +11,7 @@ import com.bugtsa.camerafilters.R
 import com.bugtsa.camerafilters.di.ScopeHost
 import com.bugtsa.camerafilters.di.ScopedInstanceProvider
 import com.bugtsa.camerafilters.presentation.media.TakePhotoFlowDataHolder
+import com.hadilq.liveevent.LiveEvent
 import com.zomato.photofilters.FilterPack
 import com.zomato.photofilters.imageprocessors.Filter
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter
@@ -34,6 +35,9 @@ class FilterPhotoViewModel(
 
     private val showPhotoLiveData = MutableLiveData<ShowPhotoState>()
     fun observeShowPhotoStates(): LiveData<ShowPhotoState> = showPhotoLiveData
+
+    private val sendShareIntent = LiveEvent<Uri>()
+    fun observeSendShareIntent(): LiveData<Uri> = sendShareIntent
 
     override fun onCleared() {
         super.onCleared()
@@ -104,6 +108,12 @@ class FilterPhotoViewModel(
             .single()
 
         showPhotoLiveData.postValue(ShowPhotoState.FiltersListPhotoState(result))
+    }
+
+    fun shareClick() {
+        provider.provide().sourceUri?.also { uri ->
+            sendShareIntent.value = uri
+        }
     }
 }
 

@@ -1,15 +1,21 @@
 package com.bugtsa.camerafilters.ui
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.webkit.MimeTypeMap
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bugtsa.camerafilters.R
+import com.bugtsa.camerafilters.data.media.ExternalFilesProvider
 import com.bugtsa.camerafilters.presentation.FilterPhotoViewModel
 import com.bugtsa.camerafilters.presentation.ShowPhotoState
 import com.zomato.photofilters.imageprocessors.Filter
@@ -34,6 +40,12 @@ class FiltersListFragment : BaseFragment(R.layout.fragment_photo_filter),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity).setSupportActionBar(vToolbar)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        vToolbar.navigationIcon = resources.getDrawable(R.drawable.ic_arrow_back_black_24dp)
+
+        vShare.setOnClickListener { filterPhotoViewModel.shareClick() }
+
         showProgress()
         recyclerView = vFilterList
         mAdapter = ThumbnailsAdapter(activity, thumbnailItemList, this)
@@ -53,6 +65,7 @@ class FiltersListFragment : BaseFragment(R.layout.fragment_photo_filter),
         super.onActivityCreated(savedInstanceState)
         filterPhotoViewModel.getBitmap()
         observeShowPhotoStates()
+        observeShareIntent()
     }
 
     override fun onFilterSelected(filter: Filter?) {
@@ -99,6 +112,22 @@ class FiltersListFragment : BaseFragment(R.layout.fragment_photo_filter),
                     }
                 }
             })
+    }
+
+    private fun observeShareIntent() {
+        filterPhotoViewModel.observeSendShareIntent().observe(this, Observer {
+            var mimeType = MimeTypeMap.getSingleton()
+                .getMimeTypeFromExtension(ExternalFilesProvider.EXT)
+            if (mimeType == null) {
+                mimeType = "*/*"
+            }
+
+            val intent = Intent(Intent.ACTION_SEND)
+                .putExtra(Intent.EXTRA_STREAM, it)
+                .setType(mimeType)
+
+            startActivity(intent)
+        })
     }
 
     companion object {

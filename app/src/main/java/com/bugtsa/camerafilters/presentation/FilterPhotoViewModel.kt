@@ -7,13 +7,13 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.bugtsa.camerafilters.R
-import com.bugtsa.camerafilters.data.media.ExternalFilesProvider
 import com.bugtsa.camerafilters.data.media.ExternalFilesProviderImpl
 import com.bugtsa.camerafilters.di.ScopeHost
 import com.bugtsa.camerafilters.di.ScopedInstanceProvider
+import com.bugtsa.camerafilters.domain.file.FileManagerInteractor
+import com.bugtsa.camerafilters.global.ErrorHandler
+import com.bugtsa.camerafilters.global.SchedulersProvider
 import com.bugtsa.camerafilters.presentation.media.TakePhotoFlowDataHolder
-import com.hadilq.liveevent.LiveEvent
 import com.zomato.photofilters.FilterPack
 import com.zomato.photofilters.imageprocessors.Filter
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter
@@ -32,6 +32,7 @@ import java.io.FileOutputStream
 
 class FilterPhotoViewModel(
     application: Application,
+    private val fileManagerInteractor: FileManagerInteractor,
     override val provider: ScopedInstanceProvider<TakePhotoFlowDataHolder>
 ) :
     RxAndroidViewModel(application),
@@ -40,8 +41,10 @@ class FilterPhotoViewModel(
     private val showPhotoLiveData = MutableLiveData<ShowPhotoState>()
     fun observeShowPhotoStates(): LiveData<ShowPhotoState> = showPhotoLiveData
 
-    private val sendShareIntent = LiveEvent<Uri>()
+    private val sendShareIntent = MutableLiveData<Uri>()
     fun observeSendShareIntent(): LiveData<Uri> = sendShareIntent
+
+    private val holder = provider.provide()
 
     override fun onCleared() {
         super.onCleared()
@@ -51,9 +54,30 @@ class FilterPhotoViewModel(
     fun getBitmap() {
         val options = BitmapFactory.Options()
         options.inPreferredConfig = Bitmap.Config.ARGB_8888
-        provider.provide().sourceUri?.also { uri ->
-            val file = ExternalFilesProviderImpl(getApplication()).getExternalImageFile()
-            showPhotoLiveData.value = ShowPhotoState.SourceImagePhotoState(uri)
+        provider.provide().sourceUri?.also { sourceUri ->
+//            ExternalFilesProviderImpl(getApplication()).getExternalImageFile()
+//                .subscribeOn(SchedulersProvider.io())
+//                .observeOn(SchedulersProvider.ui())
+//                .subscribe({ file ->
+//                    file?.also {
+//                        provider.provide().sourcePhotoTempFile = it
+//                    }
+//                }, (ErrorHandler::handle))
+//                .also(::addDispose)
+
+            fileManagerInteractor.generateTempPhotoFile()
+                .flatMap { file ->
+                    fileManagerInteractor.generateUriForFile(file)
+                        .map { Pair(file, it) }
+                }.subscribeOn(SchedulersProvider.io())
+                .observeOn(SchedulersProvider.ui())
+                .subscribe({ (file, uri) ->
+                    holder.filteredPhotoTempFile = file
+                    holder.destinationUri = uri
+                    showPhotoLiveData.value = ShowPhotoState.SourceImagePhotoState(sourceUri)
+
+                }, ErrorHandler::handle)
+                .also { addDispose(it) }
         }
     }
 
@@ -80,7 +104,7 @@ class FilterPhotoViewModel(
             .single()
 
 
-        provider.provide().sourcePhotoTempFile?.also {destFile ->
+        provider.provide().filteredPhotoTempFile?.also { destFile ->
             try {
                 val out = FileOutputStream(destFile)
                 bitmap.compress(Bitmap.CompressFormat.PNG, 90, out)
@@ -128,9 +152,19 @@ class FilterPhotoViewModel(
     }
 
     fun shareClick() {
-        provider.provide().sourceUri?.also { uri ->
-            sendShareIntent.value = uri
-        }
+        val filteredUri = provider.provide().filteredPhotoTempFile?.let { Uri.fromFile(it) }
+        val sendUri = filteredUri?.let { it } ?: provider.provide().sourceUri?.also { }
+//        fileManagerInteractor.generateTempPhotoFile()
+//            .flatMap { file ->
+//                fileManagerInteractor.generateUriForFile(file)
+//                    .map { Pair(file, it) }
+//            }.subscribeOn(SchedulersProvider.io())
+//            .observeOn(SchedulersProvider.ui())
+//            .subscribe({ (file, uri) ->
+//
+//            }, ErrorHandler::handle)
+//            .also { addDispose(it) }
+        sendShareIntent.value = sendUri
     }
 }
 

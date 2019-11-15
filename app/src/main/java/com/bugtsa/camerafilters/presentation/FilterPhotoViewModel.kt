@@ -55,16 +55,6 @@ class FilterPhotoViewModel(
         val options = BitmapFactory.Options()
         options.inPreferredConfig = Bitmap.Config.ARGB_8888
         provider.provide().sourceUri?.also { sourceUri ->
-//            ExternalFilesProviderImpl(getApplication()).getExternalImageFile()
-//                .subscribeOn(SchedulersProvider.io())
-//                .observeOn(SchedulersProvider.ui())
-//                .subscribe({ file ->
-//                    file?.also {
-//                        provider.provide().sourcePhotoTempFile = it
-//                    }
-//                }, (ErrorHandler::handle))
-//                .also(::addDispose)
-
             fileManagerInteractor.generateTempPhotoFile()
                 .flatMap { file ->
                     fileManagerInteractor.generateUriForFile(file)
@@ -152,18 +142,8 @@ class FilterPhotoViewModel(
     }
 
     fun shareClick() {
-        val filteredUri = provider.provide().filteredPhotoTempFile?.let { Uri.fromFile(it) }
+        val filteredUri = provider.provide().destinationUri
         val sendUri = filteredUri?.let { it } ?: provider.provide().sourceUri?.also { }
-//        fileManagerInteractor.generateTempPhotoFile()
-//            .flatMap { file ->
-//                fileManagerInteractor.generateUriForFile(file)
-//                    .map { Pair(file, it) }
-//            }.subscribeOn(SchedulersProvider.io())
-//            .observeOn(SchedulersProvider.ui())
-//            .subscribe({ (file, uri) ->
-//
-//            }, ErrorHandler::handle)
-//            .also { addDispose(it) }
         sendShareIntent.value = sendUri
     }
 }

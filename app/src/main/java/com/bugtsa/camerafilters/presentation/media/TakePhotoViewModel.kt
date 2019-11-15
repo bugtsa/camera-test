@@ -28,7 +28,7 @@ class TakePhotoViewModel(
     application: Application,
     private val fileManagerInteractor: FileManagerInteractor,
     private val takePhotoProvider: ScopedInstanceProvider<TakePhotoFlowDataHolder>
-) : RxAndroidViewModel(application), KoinComponent,
+) : RxAndroidViewModel(application),
     ScopeHost<TakePhotoFlowDataHolder> by ScopeHost.Delegate(takePhotoProvider) {
 
     private val takeDataHolder = takePhotoProvider.provide()
@@ -36,12 +36,8 @@ class TakePhotoViewModel(
     private val requestPermissions = LiveEvent<Unit>()
     private val startFilterScreeLiveData = LiveEvent<Unit>()
 
-    private val defaultErrorMessage = application.getString(R.string.error_undefined)
-
     private var sourcePhotoFile: File? = null
     private var filteredPhotoFile: File? = null
-    private var cropSuccessDisposable: Disposable? = null
-    private var cropErrorDisposable: Disposable? = null
 
     private val requestCameraPermissionDelegate = RequestCameraPermissionDelegate()
 
@@ -63,9 +59,9 @@ class TakePhotoViewModel(
             }
             .subscribeOn(SchedulersProvider.io())
             .observeOn(SchedulersProvider.ui())
-            .subscribe({ (file, destinationPhotoUri) ->
+            .subscribe({ (file, photoUri) ->
                 filteredPhotoFile = file
-                takeDataHolder.destinationUri = destinationPhotoUri
+                takeDataHolder.destinationUri = photoUri
                 takeDataHolder.filteredPhotoTempFile = file
                 startFilterScreeLiveData.postValue(Unit)
             }, ErrorHandler::handle)

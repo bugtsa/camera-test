@@ -3,6 +3,9 @@
     <external-files-path
         name="images"
         path="Pictures" />
+    <external-path
+        name="documents"
+        path="Documents" />
     <cache-path
         name="cached"
         path="export" />

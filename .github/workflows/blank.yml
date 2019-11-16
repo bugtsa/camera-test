@@ -16,4 +16,3 @@ jobs:
       with:
         entrypoint: ./gradlew
         args: dependencies spotlessApply detekt assembleDebug
-
